@@ -1,9 +1,10 @@
-import { StyleSheet, Text, View,SafeAreaView,Pressable, TextInput } from 'react-native';
+import { StyleSheet, Text, View,SafeAreaView,Pressable, TextInput, FlatList } from 'react-native';
 import ShoppingItems from './components/ShoppingItems';
 import { MaterialIcons } from '@expo/vector-icons';
-import { collection, addDoc,getDoc } from "firebase/firestore";
+import { collection, addDoc,getDocs } from "firebase/firestore";
 import { db } from './firebase/FirebaseConfig';
 import { useState,useEffect } from 'react';
+import { ActivityIndicator } from 'react-native';
 
 export default function App() {
   const [title,setTitle] = useState('');
@@ -22,12 +23,16 @@ export default function App() {
     }
   }
   const getShoppingList = async()=>{
-    const querySnapshot = await getDocs(collection(db, "users"));
+    const querySnapshot = await getDocs(collection(db, "shopping"));
 querySnapshot.forEach((doc) => {
   console.log(doc.id,doc.data());
+  setShoppingList({
+    ...doc.data(),
+    id: doc.id,
+  })
 });
   }
-  useEffect = (()=>{
+  useEffect (()=>{
     getShoppingList();
   },[]);
   return (
@@ -46,9 +51,20 @@ querySnapshot.forEach((doc) => {
      <MaterialIcons name="delete" size={30} color="black" />
      </Pressable>
     </View>
-      <ShoppingItems/>
-      <ShoppingItems/>
+    {/* flatlist */}
+    {shoppingList.length > 0 ?( 
+    <FlatList 
+    data={shoppingList}
+    renderItem={({item})=><ShoppingItems title={item.title}/>}
+    keyExtractor={(item)=>item.id}
 
+    />
+    ):(
+      <ActivityIndicator/>
+    )}
+   
+      
+    {/* text input  */}
       <TextInput
       placeholder='Enter Shopping item'
       style = {styles.input}

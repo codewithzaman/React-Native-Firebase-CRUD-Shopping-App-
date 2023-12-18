@@ -10,7 +10,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 3.isChecked
 */
 
-const ShoppingItems = () => {
+const ShoppingItems = ({title}) => {
   return (
     <View style={styles.container}>
      {/* checked icon */}
@@ -19,7 +19,7 @@ const ShoppingItems = () => {
     </Pressable>
      
      {/* shopping text */}
-    <Text style = {styles.text}>Bread</Text>
+    <Text style = {styles.text}>{title}</Text>
      {/* delete button */}
      <Pressable>
      <MaterialIcons name="delete" size={24} color="black" />
